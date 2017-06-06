@@ -8,6 +8,7 @@
 #
 
 include_recipe "java"
+setup_aws()
 
 group node.hadoop_spark.group do
   action :create
