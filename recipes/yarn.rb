@@ -1,9 +1,9 @@
-# Creating symbolic links from spark jars in the lib/ directory where spark is installed to 
+# Creating symbolic links from spark jars in the lib/ directory where spark is installed to
 # the directory containing yarn jars in hadoop. Hopefully, yarn will pick up these jars and add them
 # to the HADOOP_CLASSPATH :)
 # One potential problem could be if you install.hadoop_spark.as a different user than the default user 'yarn'.
 # Then the symbolic link may not be able to be created due to a lack of file privileges.
-# 
+#
 
 home = node.hops.hdfs.user_home
 private_ip=my_private_ip()
@@ -128,7 +128,7 @@ if node.attribute?('influxdb') == true
     end
   end
 end
-  
+
 
 
 # Add spark metrics.properties file to HDFS. Used by Grafana.
@@ -150,13 +150,13 @@ hops_hdfs_directory "#{Chef::Config["file_cache_path"]}/metrics.properties" do
   group node["hops"]["group"]
   mode "1775"
   dest "/user/#{node["hadoop_spark"]["user"]}/metrics.properties"
-end	
+end
 
 
 
 
 hopsUtil=File.basename(node["hadoop_spark"]["hops_util"]["url"])
- 
+
 remote_file "#{Chef::Config["file_cache_path"]}/#{hopsUtil}" do
   source node["hadoop_spark"]["hops_util"]["url"]
   owner hopsworks_user
@@ -174,7 +174,7 @@ hops_hdfs_directory "#{Chef::Config["file_cache_path"]}/hops-util-0.1.jar" do
 end
 
 hopsKafkaJar=File.basename(node["hadoop_spark"]["hops_spark_kafka_example"]["url"])
- 
+
 remote_file "#{Chef::Config["file_cache_path"]}/#{hopsKafkaJar}" do
   source node["hadoop_spark"]["hops_spark_kafka_example"]["url"]
   owner hopsworks_user
@@ -191,3 +191,19 @@ hops_hdfs_directory "#{Chef::Config["file_cache_path"]}/#{hopsKafkaJar}" do
   dest "/user/#{hopsworks_user}/#{hopsKafkaJar}"
 end
 
+
+#
+# Support Intel MKL library for matrix computations
+# https://blog.cloudera.com/blog/2017/02/accelerating-apache-spark-mllib-with-intel-math-kernel-library-intel-mkl/
+#
+case node.platform_family
+when "debian"
+
+  package "libnetlib-java" do
+    action :install
+  end
+
+when "rhel"
+
+  # TODO - add 'netlib-java'
+end
