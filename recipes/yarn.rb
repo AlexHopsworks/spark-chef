@@ -81,10 +81,10 @@ if private_ip.eql? node['hadoop_spark']['yarn']['private_ips'][0]
     end
   end
 
-  hopsUtil=File.basename(node["hops"]["hops_util"]["url"])
+  hopsUtil=File.basename(node["hops"]["hopsutil"]["url"])
 
   remote_file "#{Chef::Config["file_cache_path"]}/#{hopsUtil}" do
-    source node["hops"]["hops_util"]["url"]
+    source node["hops"]["hopsutil"]["url"]
     owner hopsworks_user
     group node["hops"]["group"]
     mode "1775"
@@ -96,7 +96,7 @@ if private_ip.eql? node['hadoop_spark']['yarn']['private_ips'][0]
     owner node["hadoop_spark"]["user"]
     group node["hops"]["group"]
     mode "1755"
-    dest "/user/#{node["hadoop_spark"]["user"]}/#{hopsUtil}"
+    dest "/user/#{node["hadoop_spark"]["user"]}/#{node["hops"]["hopsutil_jar"]}"
   end
 
 
@@ -115,7 +115,7 @@ if private_ip.eql? node['hadoop_spark']['yarn']['private_ips'][0]
     owner hopsworks_user
     group node["hops"]["group"]
     mode "1755"
-    dest "/user/#{hopsworks_user}/#{hopsKafkaJar}"
+    dest "/user/#{hopsworks_user}/#{node["hops"]["examples_jar"]}"
   end
 
 end
@@ -146,3 +146,66 @@ link "#{node.hops.base_dir}/share/hadoop/yarn/lib/#{jarFile}" do
   to "#{node['hadoop_spark']['base_dir']}/yarn/#{jarFile}"
 end
 
+
+begin
+  influxdb_ip = private_recipe_ip("hopsmonitor","default")
+rescue 
+  Chef::Log.error "could not find the influxdb ip!"  
+end
+
+begin
+  influxdb_port = node['influxdb']['port']
+rescue
+  influxdb_port = 9999
+  Chef::Log.warn "could not find the influxdb port."  
+end
+
+
+template "#{node['hadoop_spark']['base_dir']}/conf/metrics.properties" do
+  source "metrics.properties.erb"
+  owner node[:hadoop_spark][:user]
+  group node['hadoop_spark']['group']
+  mode 0750
+  action :create
+  variables({
+              :influxdb_ip => influxdb_ip,
+              :influxdb_port => influxdb_port              
+            })
+end
+
+
+begin
+  logstash_ip = private_recipe_ip("hopslog","default")
+rescue 
+  logstash_ip = node["hostname"]
+  Chef::Log.warn "could not find the Logstash ip!"
+end
+
+
+template"#{node.hadoop_spark.conf_dir}/log4j.properties" do
+  source "app.log4j.properties.erb"
+  owner node.hadoop_spark.user
+  group node.hadoop_spark.group
+  mode 0650
+  variables({ 
+        :logstash_ip => logstash_ip
+           })
+  
+end
+
+  hops_hdfs_directory "#{node.hadoop_spark.home}/conf/metrics.properties" do
+    action :put_as_superuser
+    owner node.hadoop_spark.user
+    group node.hops.group
+    mode "1775"
+    dest "/user/#{node.hops.hdfs.user}/metrics.properties"
+  end
+
+  hops_hdfs_directory "#{node.hadoop_spark.home}/conf/log4j.properties" do
+    action :put_as_superuser
+    owner node.hadoop_spark.user
+    group node.hops.group
+    mode "1775"
+    dest "/user/#{node.hops.hdfs.user}/log4j.properties"
+  end
+  
