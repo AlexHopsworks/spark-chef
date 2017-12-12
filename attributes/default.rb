@@ -12,7 +12,7 @@ default['hadoop_spark']['home']                                 = "#{node['hadoo
 default['hadoop_spark']['conf_dir']                             = "#{node['hadoop_spark']['base_dir']}/conf"
 default['hadoop_spark']['url']                                  = "#{node['download_url']}/spark-#{node['hadoop_spark']['version']}-bin-without-hadoop.tgz"
 
-default['hadoop_spark']['parquet_url']                          = "#{node['download_url']}/parquet"
+default['hadoop_spark']['spark-sql-dependencies_url']           = "#{node['download_url']}/spark-sql-dependencies"
 
 default['hadoop_spark']['executor_memory']                      = "512m"
 default['hadoop_spark']['driver_memory']                        = "1g"
@@ -90,3 +90,5 @@ default['hadoop_spark']['ssl']['protocol'] 						  = "TLSv1,TLSv1.1,TLSv1.2"
 default['hadoop_spark']['ssl']['keystorepassword']				  = "#{node['hopsworks']['master']['password']}"
 default['hadoop_spark']['ssl']['truststorepassword']				  = "#{node['hopsworks']['master']['password']}"
 
+default['hopsmonitor']['default']['private_ips']                                  = ['10.0.2.15']
+default['hopslog']['default']['private_ips']                                      = ['10.0.2.15']
