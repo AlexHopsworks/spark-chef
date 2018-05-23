@@ -5,7 +5,7 @@ metadata
 
 cookbook 'java'
 
-cookbook 'kagent', github: "hopshadoop/kagent-chef", branch: "master"
-cookbook 'ndb', github: "hopshadoop/ndb-chef", branch: "master"
-cookbook 'hops', github: "hopshadoop/hops-hadoop-chef", branch: "master"
-cookbook 'hopsmonitor', github: "hopshadoop/hopsmonitor-chef", branch: "master"
+cookbook 'kagent', github: "AlexHopsworks/kagent-chef", branch: "DELA_test"
+cookbook 'ndb', github: "AlexHopsworks/ndb-chef", branch: "DELA_test"
+cookbook 'hops', github: "AlexHopsworks/hops-hadoop-chef", branch: "DELA_test"
+cookbook 'hopsmonitor', github: "AlexHopsworks/hopsmonitor-chef", branch: "DELA_test"
