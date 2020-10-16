@@ -6,7 +6,7 @@ metadata
 cookbook 'conda', github: "logicalclocks/conda-chef", branch: "2.3"
 cookbook 'kagent', github: "logicalclocks/kagent-chef", branch: "2.3"
 cookbook 'ndb', github: "logicalclocks/ndb-chef", branch: "2.3"
-cookbook 'hops', github: "logicalclocks/hops-hadoop-chef", branch: "2.3"
+cookbook 'hops', github: "AlexHopsworks/hops-hadoop-chef", branch: "heap"
 cookbook 'hive2', github: "logicalclocks/hive-chef", branch: "2.3"
 cookbook 'hopsmonitor', github: "logicalclocks/hopsmonitor-chef", branch: "2.3"
 cookbook 'java', github: "logicalclocks/java", branch: "v7.0.0-1"
