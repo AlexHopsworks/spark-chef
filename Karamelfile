@@ -7,6 +7,7 @@ dependencies:
   - recipe: hadoop_spark::yarn
     global:
       - hops::dn
+      - hops::nm
   - recipe: hadoop_spark::historyserver
     global:
       - hadoop_spark::yarn
